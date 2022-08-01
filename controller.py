@@ -12,7 +12,7 @@ async def main():
     account = SheetsAuthorizer(auth_creds_file)
     service = await account.get_service()
     from_table = Table(service, '1f-qZEX1k_3nj5cahOzntYAnvO4ignbyesVO7yuBdv_g')
-    to_table = Table(service, '1x3WVzE-ZizRB1RGgbN8DW_LPzKExJZlxA0c_0JUqYWo')
+    to_table = Table(service, '1V07vlHGZuWlvvSrLt2LvKKr0yXVQOULnk3q3lZMT22Y')
     ru_currency = CurrencyRu()
 
     while True:
