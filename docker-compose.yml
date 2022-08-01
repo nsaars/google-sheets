@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+  db_auth:
+    container_name: db_auth
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: pulat
+      PGDATA: /var/lib/postgresql/data/pgdata
+    image: postgres:14.3-alpine
+    volumes:
+      - ./data:/var/lib/postgresql/data
+  app:
+    build: .
+    environment:
+      POSTGRES_PASSWORD: pulat
+      POSTGRES_USER: postgres
+      POSTGRES_DBNAME: postgres
+      POSTGRES_HOST: db_auth
+      POSTGRES_PORT: 5432
+      BOT_TOKEN: 1380355163:AAHYxMWbQa_mlHwaawi_zXUANoQAInBmEV0
