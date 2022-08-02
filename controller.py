@@ -1,7 +1,7 @@
-import asyncio
+from asyncio import sleep
 from db.models import Order
 from sheets.sheets import SheetsAuthorizer, Table
-from data.config import auth_creds_file
+from data.config import auth_creds_file, MAILING_TIME, FROM_TABLE, TO_TABLE
 from datetime import datetime
 from cb_api.currency import CurrencyRu
 from telegram_bot.notify_admins import notify_admins
@@ -11,27 +11,32 @@ from telegram_bot.loader import dp
 async def main():
     account = SheetsAuthorizer(auth_creds_file)
     service = await account.get_service()
-    from_table = Table(service, '1f-qZEX1k_3nj5cahOzntYAnvO4ignbyesVO7yuBdv_g')
-    to_table = Table(service, '1V07vlHGZuWlvvSrLt2LvKKr0yXVQOULnk3q3lZMT22Y')
+    from_table = Table(service, FROM_TABLE)
+    to_table = Table(service, TO_TABLE)
     ru_currency = CurrencyRu()
 
     while True:
-        from_table_values = (await from_table.read(start_ceil='A', end_ceil='D'))['values']  # getting values from source table
-        await to_table.write(from_table_values, start_ceil='A', end_ceil='D') # setting new values into own table
-        await Controller.update_db(to_table, ru_currency) # updating db
-        await asyncio.sleep(5)
+        from_table_values = (await from_table.read(start_ceil='A', end_ceil='D'))[
+            'values']  # getting values from source table
+        await to_table.write(from_table_values, start_ceil='A', end_ceil='D')  # setting new values into own table
+        await Controller.update_db(to_table, ru_currency)  # updating db
+        print('database was update successfully', datetime.now().strftime("%d.%m.%Y %H:%M:%S"))
+
+        await sleep(50)
 
 
 async def notify_outdated():
     while True:
-        outdated_delivery = await Order.query.where(Order.delivery_time < datetime.today()).gino.all()
-        outdated_messages = [f'Order {d.order_number} with delivery time: {d.delivery_time}.' for d in
-                             outdated_delivery]
+        if datetime.now().strftime("%H:%M") == MAILING_TIME:
+            outdated_delivery = await Order.query.where(Order.delivery_time < datetime.today()).gino.all()
+            outdated_messages = [f'Order {d.order_number} with delivery time: {d.delivery_time}.' for d in
+                                 outdated_delivery]
 
-        message = "The delivery period for the following products is overdue:\n\n" + '\n'.join(outdated_messages)
-        if outdated_messages:
-            await notify_admins(dp, message)
-        await asyncio.sleep(10)
+            message = "The delivery period for the following products is overdue:\n\n" + '\n'.join(outdated_messages)
+            if outdated_messages:
+                await notify_admins(dp, message)
+            await sleep(10)
+        await sleep(50)
 
 
 class Controller:

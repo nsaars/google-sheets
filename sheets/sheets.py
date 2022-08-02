@@ -1,5 +1,5 @@
-import httplib2
-import apiclient
+from httplib2 import Http
+from apiclient import discovery
 from googleapiclient.discovery import Resource
 from oauth2client.service_account import ServiceAccountCredentials
 
@@ -11,8 +11,8 @@ class SheetsAuthorizer:
             ['https://www.googleapis.com/auth/spreadsheets',
              'https://www.googleapis.com/auth/drive'])
 
-        http_auth = self.credentials.authorize(httplib2.Http())
-        self.service = apiclient.discovery.build('sheets', 'v4', http=http_auth)
+        http_auth = self.credentials.authorize(Http())
+        self.service = discovery.build('sheets', 'v4', http=http_auth)
 
     async def get_service(self):
         return self.service
@@ -59,4 +59,3 @@ class Table:
             body={'values': data}
         ).execute()
         return response
-

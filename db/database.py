@@ -21,3 +21,4 @@ async def create_db_connection():
         else:
             break
     await db.gino.create_all()
+    print('db has been successfully created!')
