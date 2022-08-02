@@ -1,5 +1,3 @@
-import logging
-
 from aiogram import Dispatcher
 
 from data.config import ADMINS
@@ -10,4 +8,4 @@ async def notify_admins(dp: Dispatcher, message: str):
         try:
             await dp.bot.send_message(admin, message)
         except Exception as err:
-            logging.exception(err)
+            print(f"Cannot send message to '{admin}' because {err}!")
