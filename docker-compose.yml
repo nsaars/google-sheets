@@ -15,8 +15,9 @@ services:
     build: .
     environment:
       POSTGRES_PASSWORD: pulat
-      POSTGRES_USER: postgres
-      POSTGRES_DBNAME: postgres
       POSTGRES_HOST: db_auth
-      POSTGRES_PORT: 5432
       BOT_TOKEN: 1380355163:AAHYxMWbQa_mlHwaawi_zXUANoQAInBmEV0
+      ADMINS: 732928701,2066041574
+      MAILING_TIME: '11:24'
+      FROM_TABLE: 1f-qZEX1k_3nj5cahOzntYAnvO4ignbyesVO7yuBdv_g
+      TO_TABLE: 1V07vlHGZuWlvvSrLt2LvKKr0yXVQOULnk3q3lZMT22Y
